@@ -166,7 +166,7 @@ The below image shows the output of the pipeline for the test image.
 1. The pipeline is enhanced for the video frames by adding the average over last n detections which act as a smoothing factor to avoid jittery.
 2. The line class is appended with the recent detections for the window centroids, lane fits and the lane curvatures to provide an averaged value.
 
-The output of the project video is available [here](/blob/master/project_video_output.mp4).
+The output of the project video is available [here](project_video_output.mp4).
 
 ------
 
