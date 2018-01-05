@@ -29,15 +29,15 @@ The goals of this project are the following:
 
 
 
-## Rubric Points##
+## Rubric Points
 
-### Writeup / README###
+### Writeup / README
 
 This README document acts as the submission to meet the Rubric point related to Writeup. The steps followed to achieve the goals is described in the following sections of this document.
 
 ------
 
-### Camera Calibration###
+### Camera Calibration
 
 - As mentioned in the lecture slides to use the  *<u>cv2.findChessboardCorners()</u>* and *<u>cv2.calibrateCamera()</u>* functions from the cv2 library, the camera calibration is performed.
 - For the camera used in the project video, the different images capturing the Chessboard in different angles were provided in the "*<u>camera_cal</u>*" folder.
@@ -51,7 +51,7 @@ This README document acts as the submission to meet the Rubric point related to 
 
 ------
 
-### Pipeline (test images)###
+### Pipeline (test images)
 
 The pipeline is started with to test the static images keeping the progress of operations.
 
@@ -161,16 +161,16 @@ The below image shows the output of the pipeline for the test image.
 
 ------
 
-### Pipeline (Video)###
+### Pipeline (Video)
 
 1. The pipeline is enhanced for the video frames by adding the average over last n detections which act as a smoothing factor to avoid jittery.
 2. The line class is appended with the recent detections for the window centroids, lane fits and the lane curvatures to provide an averaged value.
 
-The output of the project video is available [here](project_video_out.mp4).
+The output of the project video is available [here](/blob/master/project_video_output.mp4).
 
 ------
 
-### Discussion Points###
+### Discussion Points
 
 Since most of the lane detection cameras used in the current production vehicles are of monochrome type with enough robustness on lane detections, the method I followed to use only the gradients should be sufficient with more fine tuning on proper lane detection. But the usage of color and other color conversion channels provide additional supports to enhance the algorithms based on only computer vision.
 
