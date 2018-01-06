@@ -3,10 +3,10 @@ import cv2
 import numpy as np
 from ImgFilterProcess import red_thres, green_thres, mag_sobel_thresh, lab_b_thres, v_thres, single_channel_thres, blue_thres, abs_sobel_thresh, h_thres, s_thres, l_thres, combine2bin
 import glob
-from Undistort_Warp import undistort_warp,unwarp
+from Undistort_Warp import undistort_warp,unwarp, undistort_img, warp
 from FindingLanes import line
 from moviepy.editor import VideoFileClip
-
+from CameraCalibration import load_camera_mtx
 
 def get_color_threshold_binary(RGB_Img):
     
@@ -33,11 +33,13 @@ def get_color_threshold_binary(RGB_Img):
 
 def Video_Process(RGB_Img):
     
+    RGB_Img = undistort_img(RGB_Img, mtx, dist)
+    
     #Used the Conversion if the input is RGB
     BGR_Img = cv2.cvtColor(RGB_Img, cv2.COLOR_RGB2BGR)
     
     #Warped the image so that the lane lines are vertical
-    warp_img = undistort_warp(BGR_Img)
+    warp_img = warp(BGR_Img)
     
     #Applied sobel in x direction to get the vertical lines detected
     #CV_64F is used to find both positive and negative gradients
@@ -147,8 +149,8 @@ def Video_Process(RGB_Img):
      
 
     #For visualizing lane lines
-    cv2.fillPoly(road, [left_lane],color = [255,0,0])
-    cv2.fillPoly(road, [right_lane],color = [0,0,255])
+    #cv2.fillPoly(road, [left_lane],color = [255,0,0])
+    #cv2.fillPoly(road, [right_lane],color = [0,0,255])
     
     #Unwarped the drawn lane lines
     road_warped = unwarp(road)
@@ -161,7 +163,7 @@ def Video_Process(RGB_Img):
     
     cv2.putText(output, 'Curvature: Left Lane = %.2lf m, Right Lane = %.2lf m' % (left_center.radius_of_curvature, right_center.radius_of_curvature), \
                 (70, 70), font, 1, (0, 255, 80), 2, cv2.LINE_AA)
-    cv2.putText(output, 'Lane offset from Road Center: %.2lf m' % (xm_per_pix*(output.shape[1]/2 - ((left_fit[2]+right_fit[2])/2))), \
+    cv2.putText(output, 'Lane offset from Road Center: %.2lf m' % (xm_per_pix*(output.shape[1]/2) - ((left_fit_reversed[2]+right_fit_reversed[2])/2)), \
                 (70, 110), font, 1, (0, 255, 80), 2, cv2.LINE_AA)
     cv2.putText(output, 'Color_Filter: %d, w: %d, h: %d, m:%d, sf:%d' % (Color_Threshold_Enable,left_center.window_width,left_center.window_height,left_center.margin, left_center.smooth_factor), \
                 (70, 150), font, 1, (0, 255, 80), 2, cv2.LINE_AA)
@@ -175,13 +177,13 @@ margin = 20
 Color_Threshold_Enable = 0
 
 
-Output_video = 'project_video_out.mp4'
+Output_video = 'project_video_output.mp4'
 Input_video = 'project_video.mp4'
 
 ym_per_pix = (32/720)
 xm_per_pix = (3.7/80)
 
-
+mtx, dist = load_camera_mtx()
 
 #
 #fnames = glob.glob('test_images/test*.jpg', recursive = True)
@@ -204,7 +206,7 @@ if __name__ == '__main__':
     parser.add_argument(
         '--o',
         type=str,
-        default='project_video_out.mp4',
+        default='project_video_output.mp4',
         help='File name of the output video file.'
     )
     parser.add_argument(
@@ -220,12 +222,12 @@ if __name__ == '__main__':
     parser.add_argument(
         '--m',
         type=int,
-        default=20,
+        default=10,
         help='Margin of the area to search for lanes')
     parser.add_argument(
         '--c',
         type=int,
-        default=1,
+        default=0,
         help='Enable/Disable Thrsholds based on Color')
     parser.add_argument(
         '--sf',
@@ -242,6 +244,8 @@ if __name__ == '__main__':
     Output_video = args.o
     Input_video = args.i
     smooth_factor = args.sf
+
+    mtx, dist = load_camera_mtx()
     
     left_center = line(loc = 0, ym_per_pix= ym_per_pix, xm_per_pix = xm_per_pix, window_width = window_width, window_height = window_height, margin = margin, smooth_factor = smooth_factor)
     right_center = line(loc = 1, ym_per_pix= ym_per_pix, xm_per_pix = xm_per_pix, window_width = window_width, window_height = window_height, margin = margin, smooth_factor = smooth_factor)
@@ -252,6 +256,9 @@ if __name__ == '__main__':
     #        write_name = 'test_images/' + str(idx) + '.jpg' 
     #        out = Video_Process(RGB_Img)
     #        cv2.imwrite(write_name, out)
+#    RGB_Img = cv2.imread('test_images/test2.jpg')
+#    out = Video_Process(RGB_Img)
+#    cv2.imwrite('test_images/test2_out.jpg', out)
     clip = VideoFileClip(Input_video)
     video_clip = clip.fl_image(Video_Process)
     video_clip.write_videofile(Output_video, audio = False)

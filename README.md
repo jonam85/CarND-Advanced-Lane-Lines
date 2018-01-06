@@ -67,7 +67,7 @@ Below table provides, the distortion correction on the sample image.
 
 With reference to the operations mentioned in the [Mathworks Lane Detection example](https://in.mathworks.com/help/visionhdl/examples/lane-detection.html), I tried out the method of performing the perspective transform prior to the binarization of the image.
 
-1. The straight_lines.jpg image is used find the corner points of the trapezoid for performing the perspective transformation. ![test1](examples/straight_lines1_points.jpg) The points were found out to be 
+1. The straight_lines.jpg image is used find the corner points of the trapezoid for performing the perspective transformation. ![test1](examples/str_undist1.jpg)The points were found out to be 
 
 ```python
     src = np.float32([[592,450],[682,450],[1116,720],[200,720]])

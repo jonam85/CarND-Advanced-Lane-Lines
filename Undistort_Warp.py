@@ -48,9 +48,10 @@ def undistort_warp(img):
 
 #fnames = glob.glob('test_images/s*.jpg')
 #for idx, fname in enumerate(fnames):
-#    img = cv2.imread(fname)
-#    print(fname)
-#    fname = 'test_images/' + str(idx) + '.jpg'
-#    img = undistort_warp(img)
-#    cv2.imwrite(fname, img)
+#img = cv2.imread('test_images/straight_lines1.jpg')
+##    print(fname)
+#fname = 'test_images/str_undist.jpg'
+#mtx, dist = load_camera_mtx()
+#img = undistort_img(img, mtx, dist)
+#cv2.imwrite(fname, img)
     
